@@ -7,6 +7,7 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-accent: var(--background-accent);
   --color-foreground: var(--foreground);
   --color-primary: var(--text-primary);
   --color-secondary: var(--text-secondary);
@@ -19,7 +20,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: oklch(0.17 0.0041 285.95);
+    --background-accent: oklch(0.24 0.0041 285.95);
     --foreground: oklch(80% 0.0053 286.3);
     --text-primary: oklch(95.63% 0.0053 286.3);
     --text-secondary: oklch(70% 0.0053 286.3);
@@ -38,7 +40,7 @@ body {
     @apply text-pretty;
   }
 
-  main > h1 {
+  h1 {
     @apply text-primary!;
   }
 
@@ -48,6 +50,10 @@ body {
 
   aside a {
     @apply text-secondary;
+  }
+
+  aside div {
+    @apply bg-background!;
   }
 
   p {
@@ -62,7 +68,7 @@ body {
     @apply font-monaspace text-primary bg-code! px-2! py-1!;
   }
 
-  aside div {
-    @apply bg-background!;
+  .nextra-callout {
+    @apply bg-background-accent;
   }
 }
