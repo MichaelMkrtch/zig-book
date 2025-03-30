@@ -8,19 +8,61 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-code: var(--code);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-pretendard: var(--font-pretendard);
+  --font-monaspace: var(--font-monaspace);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: oklch(80% 0.0053 286.3);
+    --text-primary: oklch(95.63% 0.0053 286.3);
+    --text-secondary: oklch(70% 0.0053 286.3);
+    --code: oklch(22% 0.0161 279.24);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-pretendard);
+}
+
+@layer utilities {
+  body {
+    @apply text-pretty;
+  }
+
+  main > h1 {
+    @apply text-primary!;
+  }
+
+  div {
+    @apply text-foreground!;
+  }
+
+  aside a {
+    @apply text-secondary;
+  }
+
+  p {
+    @apply text-primary;
+  }
+
+  .nextra-breadcrumb span {
+    @apply text-secondary;
+  }
+
+  .nextra-code {
+    @apply font-monaspace text-primary bg-code! px-2! py-1!;
+  }
+
+  aside div {
+    @apply bg-background!;
+  }
 }
