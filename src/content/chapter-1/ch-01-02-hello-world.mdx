@@ -1,3 +1,5 @@
+import { Info } from 'lucide-react';
+
 # Hello, World!
 
 It's time to write your first Zig program!
@@ -17,10 +19,136 @@ $ cd hello_world
 ## First Zig Program
 Make a new file and name it *main.zig*. Zig files always end with the *.zig* extension. For multi-word filenames, the convention is to separate words with an underscore, like *hello_world.zig*.
 
-Open *main.zig* in your favorite text editor and enter the code below:
+Open *main.zig* in your favorite text editor. You may get a warning from the Zig language server that it is not meant to be used with Zig's nightly releases. Ignore it for now. Next, enter the code below in *main.zig*:
 
 ```zig
-pub fn test() !void {
-    print("Fix this code");
+const std = @import("std");
+
+pub fn main() !void {
+    const stdout = std.io.getStdOut().writer();
+
+    try stdout.print("Hello, world!\n", .{});
 }
 ```
+
+Save the file and go back to your terminal. Make sure you are in the *~/projects/hello_world* directory. Then, on macOS, enter the following commands to compile and run the program:
+
+```shell
+$ zig build-exe ./main.zig
+$ ./main
+# Hello, world!
+```
+
+Congratulations! You've just written your first program in Zig.
+
+## Understanding a Zig Program
+Let's review this program line-by-line and in detail.
+
+```zig
+const std = @import("std");
+```
+
+Zig modules, or files, can import other Zig modules through the `@import` function. This function is not part of Zig's standard library, but rather built-in to the Zig compiler itself. The `@import` function specifically tells the compiler to find, parse, and make available the **public** declarations of another Zig file. On this line, we are importing Zig's standard library (`"std"`) and saving it to a constant named `std`.
+
+### How Does Zig Find Files to Import?
+Zig can resolve paths in one of two ways:
+* **Relative paths:** `@import("subfolder/my_module.zig")` imports relative to the current file.
+* **Package paths:** `@import("package_name")` (like `"std"`) relies on package definitions, usually set up in your *build.zig* file. This is fundamental for project structure.
+
+><span className="blockquote-header"><Info />Note: Constants and Imports</span>
+Zig evaluates constant values at compile-time, not run-time. Additionally, imports are compile-time operations. Therefore, the result of an import, which is needed at compile-time, must be assigned to a constant so it's evaluated at compile-time.
+
+### The `main` Function
+```zig
+pub fn main() !void {
+
+}
+```
+
+The `main` function is special; it serves as the entry point for your program when it executes. For the Zig compiler and build system to recognize it, this function must be named exactly `main`. By default, declarations in Zig (including functions) are private to their file. Since the `main` function needs to be called from outside the file (by the system starting your program), it must be marked `pub` (public). The parentheses `()` are used to define a function's parameters. Since they are empty here, this `main` function takes no parameters. Following the parentheses is the function’s return type, which is `!void` in this example.
+
+Zig specifies that `main` can return one of four types:
+
+* `void`: The program finishes successfully and returns no specific value.
+* `u8`: The program finishes successfully and returns an 8-bit unsigned integer, typically used as a process exit code similar to C.
+* `!void`: The program might fail (return an error) or succeed without returning a value.
+* `!u8`: The program might fail (return an error) or succeed and return a `u8` exit code.
+
+The `!` prefix indicates an error union type, meaning the function can return either the type specified (`void` or `u8` in this case) or an error. Our example uses `!void` because it anticipates performing operations that could potentially fail. We will learn more about errors and unions later.
+
+Zig requires all function bodies to be wrapped in curly braces `{}`. It is good practice to open the braces on the same line as the function declaration, with one space in between.
+
+#### Function Body
+The body of the `main` function holds the following code:
+
+```zig
+const stdout = std.io.getStdOut().writer();
+
+try stdout.print("Hello, world!\n", .{});
+```
+
+These lines are responsible for printing text to the screen. Let's discuss them in detail, starting with the first line:
+
+```zig
+const stdout = std.io.getStdOut().writer();
+```
+
+1. `std.io`: We access the input/output module (`io`) within the standard library (`std`).
+2. `getStdOut()`: We call this function to retrieve a handle to the standard output stream managed by the operating system (usually your terminal window). This typically returns a `std.fs.File` object representing standard output.
+3. `writer()`: On the file object returned by `getStdOut()`, we call the `writer()` method. This provides a specific writer interface (`std.io.Writer`) associated with the standard output file. Think of this as an object specifically designed with methods (like print) for sending data to the standard output stream.
+4. `const stdout`: Finally, we assign this writer object to a constant named `stdout`. We use a constant because we don't intend to change what `stdout` refers to within this scope.
+
+Put simply, this line gets access to the standard output destination and prepares a specific tool (the writer) needed to send text data to it.
+
+```zig
+try stdout.print("Hello, world!\n", .{});
+```
+
+><span className="blockquote-header"><Info />Note: Try-Catch</span>
+You may be familiar with try-catch blocks in other programming languages. The `try` keyword in Zig behaves differently from what you may be used to.
+
+1. `try`: This keyword is used to execute expressions that might return an error. Writing to standard output is an I/O operation that might fail for various reasons, including if the output stream is closed unexpectedly. `print()` is designed to return an error if such a failure occurs. There are two possible paths:
+    * If `print()` succeeds, `try` will evaluate to the `print` function's success value (`void`) and allow the program to continue.
+    * If `print()` returns an error, `try` immediately stops execution of `main()` and passes the error up. This is valid because our main function has a return type of `!void`. The error will then be printed to `stderr`. In higher-level languages like Python, unhandled errors halt program execution. In Zig, errors encountered by `try` only halt function execution and return the error to the caller. Program execution is halted if an error propagates to `main()` without being handled.
+2. `stdout.print()`: We call the `print` method on the `stdout` writer object obtained in the previous line. This method is designed for printing formatted strings, similar to `printf` in C and `println!` in Rust.
+3. `Hello, world!\n`: This is the first argument to `print` – the string literal we want to display. The `\n` at the end represents a newline character, causing the cursor to move to the next line in the terminal after printing.
+4. `.{}`: This is the second argument to `print` – an empty anonymous struct literal containing values to substitute into format specifiers in the string literal (like `{d}` or `{s}`). `Hello, world!\n` doesn't contain any format specifiers, so we leave the struct literal empty to indicate no extra arguments are needed for formatting.
+
+This line attempts to print the specified string to the console via the stdout writer, automatically handling potential output errors thanks to try.
+
+We will learn more about strings, structs, and errors in later chapters.
+
+## Compiling and Running
+It's important to know that compiling and running code are two separate steps.
+
+To run a program, you must first compile it. We can invoke the Zig compiler with `zig` and tell it to build an executable binary with `build-exe`. Then we list all of the modules we want to execute separated by spaces:
+
+```shell
+$ zig build-exe main.zig
+```
+
+If the compiler does not find a `main` function, a compilation error will be raised.
+
+This command creates a binary executable at the root of your project. You can see this by listing the contents of your *hello_world* directory:
+
+```shell
+ls
+# main main.o main.zig
+```
+
+We now have our source code file *main.zig* in addition to the binary executable `main` and and an object file `main.o`.
+* *main.o* is an a file containing compiled machine code and metadata (variable names, function names, relocation information) for *main.zig*.
+* *main* is the final runnable program.
+
+We can run the executable binary like this:
+
+```shell
+./main
+```
+
+In our case, this will print `Hello, world!`.
+
+While this approach is suitable for simple programs, it doesn't scale well as projects become more complex. The next section introduces additional Zig commands designed to simplify the build and execution process.
+
+><span className="blockquote-header"><Info />Note: Build Modes</span>
+In addition to `build-exe`, Zig offers the `build-lib` and `build-obj` commands. These commands compile your Zig modules into a portable C ABI library or object files, respectively.

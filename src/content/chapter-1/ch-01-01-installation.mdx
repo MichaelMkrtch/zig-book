@@ -1,10 +1,12 @@
+import { Info } from 'lucide-react';
+
 # Installation
 
 The best way to download Zig is through the official website. The nightly version of Zig is currently not available through tools like Homebrew. You'll need to an internet connection for the download.
 
 Zig is currently unstable (pre 1.0). This means that each release may have breaking changes and guides can quickly become out-of-date. Please be sure to use a nightly version of Zig 0.15 so that the examples in this book compile in your local environment.
 
-><span className="blockquote-header">**Note: Command Line Notation**</span>
+><span className="blockquote-header"><Info />Note: Command Line Notation</span>
 Throughout the book, we’ll use some commands in the terminal. This will be marked by `$`. You don’t need to type the `$` character; it’s the command line prompt shown to indicate the start of each command. PowerShell-specific examples will use `>` rather than `$`.
 
 ## Installing on macOS
@@ -31,3 +33,5 @@ You should see something like this:
 `0.15.0-dev.99+c1db72cdb`
 
 If you see this information, you have successfully installed Zig! If you see an error like `zsh: command not found: zig`, then you likely set up your path incorrectly. Try to follow the exact guide if you made any customizations.
+
+In the next section, we'll write our first Zig program.

@@ -69,10 +69,6 @@ body {
     @apply text-secondary;
   }
 
-  pre {
-    @apply ring-0! bg-transparent!;
-  }
-
   /* sidebar */
   aside div {
     @apply bg-background! font-semibold;
@@ -101,7 +97,7 @@ body {
   }
 
   .blockquote-header {
-    @apply text-primary text-lg block;
+    @apply text-primary text-lg stroke-2 items-center mt-1 mb-2 flex gap-2;
   }
 
   /* search bar placeholder */
@@ -121,6 +117,16 @@ body {
   /* inline code */
   .nextra-code {
     @apply font-monaspace text-code-text bg-code! px-2! py-1!;
+  }
+
+  /* code block */
+  pre {
+    @apply ring-0! bg-transparent!;
+  }
+
+  /* certain code keywords are italic. Removes italics. */
+  span {
+    @apply not-italic!;
   }
 
   .nextra-callout {
