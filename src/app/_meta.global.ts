@@ -6,7 +6,7 @@ const chapter1: MetaRecord = {
 };
 
 const meta = {
-  title: "The Zig Book",
+  index: "The Zig Book",
   "chapter-1": { items: chapter1 },
 };
 
