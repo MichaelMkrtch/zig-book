@@ -4,8 +4,8 @@
   --background: oklch(0.95 0 0);
   --foreground: #171717;
   --text-primary: oklch(0.17 0.0041 285.95);
-  --text-secondary: oklch(0.24 0.0041 285.95);
-  --code: oklch(25% 0.0161 279.24);
+  --text-secondary: oklch(55% 0.0053 286.3);
+  --code: oklch(30% 0.0161 279.24);
   --code-text: oklch(95.63% 0.0053 286.3);
   /* Nextra color overrides */
   --x-color-gray-400: oklch(70% 0.0053 286.3);
@@ -74,7 +74,16 @@ body {
     @apply bg-background! font-semibold;
   }
 
+  /* mobile sidebar */
+  .nextra-mobile-nav {
+    @apply bg-background!;
+  }
+
   p {
+    @apply text-secondary!;
+  }
+
+  li {
     @apply text-secondary;
   }
 
@@ -92,7 +101,7 @@ body {
   }
 
   /* search bar placeholder */
-  input::placeholder {
+  .nextra-search input::placeholder {
     @apply text-secondary!;
   }
 
