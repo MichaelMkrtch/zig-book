@@ -1,14 +1,11 @@
 import nextra from "nextra";
 
 const withNextra = nextra({
-  // ... Other Nextra config options
+  mdxOptions: {
+    rehypePrettyCodeOptions: {
+      theme: "material-theme-ocean",
+    },
+  },
 });
 
 export default withNextra({});
-
-// const nextConfig: NextConfig = {
-
-//   /* config options here */
-// };
-
-// export default nextConfig;
