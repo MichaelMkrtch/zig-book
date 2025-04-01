@@ -40,8 +40,8 @@ const navbar = (
         <h1 className="text-[28px] font-bold font-pretendard">The Zig Book</h1>
       </div>
     }
-    logoLink={false}
-    projectLink="google.com"
+    logoLink={true}
+    projectLink="https://github.com/MichaelMkrtch/zig-book"
     projectIcon={<GithubIcon />}
   />
 );
