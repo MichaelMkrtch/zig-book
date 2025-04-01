@@ -1,0 +1,40 @@
+import { Info } from "lucide-react";
+
+# The Zig Build System
+For simple projects, compiling and executing can be combined using the `zig run` command:
+
+```shell
+$ zig run main.zig
+```
+
+This command compiles *main.zig* and immediately runs the resulting executable. While convenient, this approach doesn't scale well for projects with multiple files, dependencies, or complex build requirements.
+
+## Package Management
+For managing real-world projects, Zig provides a powerful integrated build system invoked via the `zig build` command. This eliminates the need for external build tools like CMake.
+
+At the heart of the build system is the *build.zig* file, which should be located in your project's root directory. This is a regular Zig source file containing instructions written in Zig code that define how your project should be built (e.g., compiling source files, linking libraries, creating executables, running tests).
+
+When you execute `zig build`, the Zig compiler looks for *build.zig* in the current directory. It then compiles and runs this *build.zig* script. The script, using the build system APIs provided by the standard library, orchestrates the compilation and linking of your entire project according to the logic you've defined.
+
+><span className="blockquote-header"><Info />Note: Library Functions</span>
+When writing library functions, it is necessary to add `export` before function declarations so that they are available in the public library object created by the Zig compiler.
+
+## Project Configuration and Dependencies
+Alongside *build.zig*, you will often have a *build.zig.zon* file. The `.zon` extension stands for Zig Object Notation, a data format similar to JSON but designed for Zig. It primarily serves to:
+
+* Declare metadata about your project (name, versions, etc.).
+* Delcare dependencies you project needs from external sources.
+
+The `build.zig.zon` file is similar to `package.json` in Node.js and `Cargo.toml` in Rust.
+
+Zig has a package manager that is integrated with the build system. This package manager reads the dependency information from *build.zig.zon* and handles tasks like fetching and making them available to your *build.zig* script. Your *build.zig* script then uses functions like `b.dependency()` to incorporate these declared dependencies into the build process.
+
+Zig's package manager is under active development and not as mature as Cargo in Rust. This means that it can change often and documentation can be out-of-date.
+
+## Build Output
+By default, the `zig build` command places compiled artifacts (executables, libraries) into a *zig-out* directory created in your project root. You can then run your executables directly, typically from:
+
+```shell
+$ ./zig-out/bin/your_project_name
+# The project name will be the name you defined in build.zig
+```

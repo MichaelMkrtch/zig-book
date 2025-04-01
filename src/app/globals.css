@@ -71,12 +71,22 @@ body {
 
   /* sidebar */
   aside div {
-    @apply bg-background! font-semibold;
+    @apply bg-background! font-medium!;
+  }
+
+  /* sidebar links */
+  aside div .active > a {
+    @apply font-semibold!;
   }
 
   /* mobile sidebar */
   .nextra-mobile-nav {
     @apply bg-background!;
+  }
+
+  /* table of contents */
+  li a {
+    @apply font-medium!;
   }
 
   p {
