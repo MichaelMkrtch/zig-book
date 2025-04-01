@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/react";
+
 import localFont from "next/font/local";
 
 import { Layout, Navbar } from "nextra-theme-docs";
@@ -78,6 +80,7 @@ export default async function RootLayout({
           docsRepositoryBase="https://github.com/shuding/nextra/tree/main/docs"
         >
           {children}
+          <Analytics />
         </Layout>
       </body>
     </html>
