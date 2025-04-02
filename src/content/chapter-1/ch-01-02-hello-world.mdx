@@ -50,6 +50,8 @@ const std = @import("std");
 
 Zig modules, or files, can import other Zig modules through the `@import` function. This function is not part of Zig's standard library, but rather built-in to the Zig compiler itself. The `@import` function specifically tells the compiler to find, parse, and make available the **public** declarations of another Zig file. On this line, we are importing Zig's standard library (`"std"`) and saving it to a constant named `std`.
 
+Also notice that, like in C, statements must be terminated with a semicolon.
+
 ### How Does Zig Find Files to Import?
 Zig can resolve paths in one of two ways:
 * **Relative paths:** `@import("subfolder/my_module.zig")` imports relative to the current file.

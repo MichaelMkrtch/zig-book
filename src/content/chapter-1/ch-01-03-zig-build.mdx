@@ -4,10 +4,44 @@ import { Info } from "lucide-react";
 For simple projects, compiling and executing can be combined using the `zig run` command:
 
 ```shell
-$ zig run main.zig
+$ zig run ./main.zig
 ```
 
 This command compiles *main.zig* and immediately runs the resulting executable. While convenient, this approach doesn't scale well for projects with multiple files, dependencies, or complex build requirements.
+
+## Creating a Project with Zig
+We created the "Hello, world!" project manually by first making a directory then creating a *main.zig* file to store our code. Zig offers a better way to create projects through `zig init`. We first need to create a directory for the project, then run this command to have Zig set everything up for us. This is how we could have created the project in the previous section:
+
+```shell
+$ cd ~/projects
+$ mkdir hello_world
+$ cd hello_world
+$ zig init
+```
+
+The `zig init` command creates the following project structure:
+
+```text
+hello_world
+├─ src
+│  ├─ main.zig
+│  ├─ root.zig
+├─ build.zig
+├─ build.zig.zon
+```
+
+If you are writing an executable program such as our "Hello, world!" project, you will be writing code in *main.zig*. The convention is to delete the *root.zig* file. If you are writing a library, however, *root.zig* will be the root source file of the library. This means you can delete the *main.zig* file.
+
+Both files are created with some boilerplate code. If you're curious, take a look at the code in the files. You can safely delete all of the code in either file and use the one necessary for your project (executable or library).
+
+You may have noticed two files we have not yet discussed: *build.zig* and *build.zig.zon*. The following sections will explain their roles. The files contain helpful comments that explain the purpose of the code, so consider reading them if you're interested.
+
+For now, **do not** delete the code in *build.zig* or *build.zig.zon;* otherwise, your projects will fail to build. If you are more experienced, feel free to modify the files.
+* If you delete code in *build.zig*, the Zig compiler won't know what to compile or how to compile it.
+* If you delete code in *build.zig.zon*, you will encounter errors because required fields in the file are missing.
+
+><span className="blockquote-header"><Info />Note: `zig run`</span>
+With the project structure described above, we can no longer run our code with `zig run ./main.zig` because the *main.zig* is not in the project root. We have to use the correct path to the file: `zig run src/main.zig`.
 
 ## Package Management
 For managing real-world projects, Zig provides a powerful integrated build system invoked via the `zig build` command. This eliminates the need for external build tools like CMake.

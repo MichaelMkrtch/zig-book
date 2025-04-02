@@ -6,9 +6,15 @@ const chapter1: MetaRecord = {
   "ch-01-03-zig-build": "1.3 The Zig Build System",
 };
 
+const chapter2: MetaRecord = {
+  "ch-02-01-variables": "2.1 Variables",
+  "ch-02-02-data-types": "2.2 Data Types",
+};
+
 const meta = {
   index: "The Zig Book",
   "chapter-1": { items: chapter1 },
+  "chapter-2": { items: chapter2 },
 };
 
 export default meta;
