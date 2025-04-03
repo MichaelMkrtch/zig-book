@@ -72,3 +72,35 @@ By default, the `zig build` command places compiled artifacts (executables, libr
 $ ./zig-out/bin/your_project_name
 # The project name will be the name you defined in build.zig
 ```
+
+## Build Modes
+Zig allows you to use different build-optimization modes called Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
+
+1. `Debug` (default):
+  * **Goal:** Easiest debugging experience.
+  * **Optimizations**: Optimizations are disabled to make compile times faster. It ensures the compiled code maps closely to the source code for debugging.
+  * **Safety**: Enables the maximum amount of safety checks for undefind behavior, but results in worse runtime performance due to these checks.
+  * **DebugInfo**: Full debug information.
+2. `ReleaseSafe`:
+  * **Goal:** Create an optimized release build with safety checks.
+  * **Optimizations**: Optimizations are enabled.
+  * **Safety**: Safety checks are enabled and undefined behavior will cause the program to panic (crash). This prevents silent errors but incurs a small runtime performance cost compared to `ReleaseFast`.
+  * **DebugInfo**: Minimal to none.
+3. `ReleaseFast`:
+  * **Goal:** Maximum runtime performance.
+  * **Optimizations**: Enabled and tuned for speed.
+  * **Safety**: Safety checks are disabled. Undefined behavior might occur without warning. This has the best performance but requires careful coding.
+  * **DebugInfo**: Usually none.
+4. `ReleaseSmall`:
+  * **Goal:** Minimum binary size.
+  * **Optimizations**: Enabled and tuned for size.
+  * **Safety**: Safety checks are disabled, similar to `ReleaseFast`. Undefined behavior might occur without warning.
+  * **DebugInfo**: Usually none. Useful for embedded systems or environments where binary size is critical.
+
+These build modes can be set with the flag: `-Doptimize=<mode>`:
+
+```shell
+$ zig build -Doptimize=ReleaseFast
+```
+
+It is best to be explicit about which mode you prefer when building your code. You can configure a default mode in `zig.build`. If you omit the optimization flag, Zig defaults to `Debug`.

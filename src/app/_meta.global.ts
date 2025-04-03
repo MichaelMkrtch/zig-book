@@ -8,7 +8,8 @@ const chapter1: MetaRecord = {
 
 const chapter2: MetaRecord = {
   "ch-02-01-variables": "2.1 Variables",
-  "ch-02-02-data-types": "2.2 Data Types",
+  "ch-02-02-primitive-data-types": "2.2 Primitive Data Types",
+  "ch-02-03-arrays": "2.3 Arrays",
 };
 
 const meta = {

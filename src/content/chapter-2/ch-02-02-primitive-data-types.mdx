@@ -1,0 +1,104 @@
+import { Info } from "lucide-react";
+
+# Primitive Data Types
+Zig is a statically-typed language, meaning the types of all variables must be known at compile time. The compiler can usually infer types, but sometimes we will need to be more explicit.
+
+Zig supports many different data types. For a comprehensive list, check the [language reference](https://ziglang.org/documentation/master/#Primitive-Types).
+
+### Integers
+An integer is a number without a fractional component. Zig provides integer types that are either signed or unsigned.
+
+* **Signed integers** (`i` prefix, like `i32`) can represent negative, zero, and positive values.
+* **Unsigned integers** (`u` prefix, like `u32`) can represent only zero and positive values (they are non-negative).
+
+The size (or bit width) of an integer type dictates the range of values it can hold and the amount of memory it occupies. Common sizes include 8-bit, 16-bit, 32-bit, 64-bit, and 128-bit. A larger bit width allows for storing larger numbers but uses more memory.
+
+| Length  | Signed | Unsigned |
+|---------|--------|----------|
+| 8-bit   | i8     | u8       |
+| 16-bit  | i16    | u16      |
+| 32-bit  | i32    | u32      |
+| 64-bit  | i64    | u64      |
+| 128-bit | i128   | u128     |
+| arch    | isize  | usize    |
+
+The range of values a type can store depends on its size (*n* bits) and whether it's signed or unsigned:
+* Signed variants store numbers from -(2<sup>n - 1</sup>) to 2<sup>n - 1</sup> - 1, inclusive.
+* Unsigned variants store numbers from 0 to 2<sup>n - 1</sup> - 1, inclusive.
+
+For example, an `i8` can store values from -128 to 127, whereas a `u8` can store values from 0 to 255.
+
+Zig also provides architecture-dependent (*arch*) integer types: `isize` (signed) and `usize` (unsigned). These are pointer-sized integers, meaning their size matches the target architecture's pointer size (32 bits on 32-bit systems and 64 bits on 64-bit systems). They are often used for memory indexing, sizes, and pointer arithmetic.
+
+#### Integer Overflow
+Integer overflow occurs when the result of an arithmetic operation falls outside the range of values that the integer type can represent. For example, a `u8` integer can hold values from 0 to 255. Attempting to store a value outside this range, like in the following code, causes an overflow:
+
+```zig
+var total: u8 = 255;
+total += 1;
+```
+
+How Zig handles overflows depends on the build mode you use. In safety-checked build-optimization modes like Debug and ReleaseSafe, using standard operators (+, -, *, etc.) when overflow occurs triggers a runtime panic. This prevents unexpected behavior by default.
+
+In performance modes like ReleaseFast and ReleaseSmall, these safety checks are disabled. Overflow with standard operators instead results in undefined behavior (UB). Relying on specific outcomes like two's-complement wrapping in these modes is unsafe, as the compiler may optimize based on the assumption that overflow doesn't happen. Unlike C (where only signed overflow is UB), Zig considers overflow UB for both signed and unsigned types in performance modes when using standard operators.
+
+><span className="blockquote-header"><Info />Note: Two's Complement Wrapping</span>
+Integer wrapping is what happens when the result of an arithmetic operation falls outside the range that an integer type can represent. Two's complement wrapping is one way of wrapping integers. Put simply, values greater than the maximum value a type can hold will wrap around to the minimum the type can hold. In the case of a `u8`, the value 256 becomes 0, the value 257 becomes 1, and so on.
+
+Zig provides a few ways to explicitly handle overflows:
+
+* **Wrapping Operators:** Use operators like `+%`, `-%`, and `*%` for intentional two's-complement wrapping behavior (`255 +% 1` results in 0 for a `u8`).
+
+* **Saturating Operators:** Use operators like `+|`, `-|`, and `*|` to clamp the result to the minimum or maximum value of the type instead of overflowing/wrapping.
+
+* **Builtin Functions:** Functions like `@addWithOverflow` and `@subWithOverflow` perform an operation and return a tuple containing whether there was an overflow (as a `u1`) and the possibly overflowed bits of the operation. This allows you to detect and handle overflow manually. See `@intCast` and related builtins in the language reference. See [builtin overflow functions](https://ziglang.org/documentation/master/#Builtin-Overflow-Functions) for more details.
+
+><span className="blockquote-header"><Info />Note: `u1` and Overflowed Bits</span>
+A `u1` is an unsigned integer that uses exactly 1 bit of space. Since it is 1 bit, it can represent either 0 or 1. In the context of the builtin overflow functions, this acts as a Boolean flag where 0 means no overflow occured (false) and 1 means an overflow occurred (true).
+>
+>The overflowed bits refer to the result of the operation as if it were performed using standard two's-complement wrapping arithmetic. If no overflow occurred, it is simply the correct result. If an oveflow occurred, it is the value after a wrap-around. For example, `255 + 1` would overflow a `u8`, returning a two's-complement wrapped value of 0.
+
+
+For more details on Zig's operators, including the wrapping and saturating operators, see the [operators section](https://ziglang.org/documentation/master/#Table-of-Operators) of the language reference.
+
+### Floating-Point Numbers
+Floating-point numbers, or floats, are numbers with decimal points. Zig supports the following float types:
+
+| Length  | Float |
+|---------|-------|
+| 16-bit  | f16   |
+| 32-bit  | f32   |
+| 64-bit  | f64   |
+| 128-bit | f128  |
+
+### Numeric Operations
+Zig supports all of the numeric operations you would expect. Integer division truncates towards zero to the nearest integer.
+
+```zig
+pub fn main() void {
+    const sum = 5 + 10;
+
+    const difference = 100 - 45;
+
+    const product = 5 * 5;
+
+    const quotient = 10.5 / 2.3;
+    const truncated = 10 / 3;
+
+    const remainder = 10 % 3;
+}
+```
+
+### The Boolean Type
+The Boolean type has two possible values: `true` and `false`. They can be typed explicitly with `bool` and are one byte in size.
+
+```zig
+pub fn main() void {
+    const t: bool = true;
+
+    const f: bool = false;
+}
+```
+
+### C ABI Compatible Types
+Zig comes with many types for ABI compatibility with C: `c_char`, `c_int`, `c_long`, and many more. You can view all of Zig's primitive types in the [reference](https://ziglang.org/documentation/master/#Primitive-Types).
