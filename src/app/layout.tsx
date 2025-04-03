@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 import localFont from "next/font/local";
 
 import { Layout, Navbar } from "nextra-theme-docs";
-import { Head } from "nextra/components";
+import { Head, Search } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 import "nextra-theme-docs/style.css";
 import "./globals.css";
@@ -60,6 +60,7 @@ export default async function RootLayout({
       >
         <Layout
           // banner={banner}
+          search={<Search />}
           navbar={navbar}
           pageMap={await getPageMap()}
           nextThemes={{
