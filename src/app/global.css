@@ -1,3 +1,18 @@
 @import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/dusk.css';
 @import 'fumadocs-ui/css/preset.css';
+
+@theme inline {
+  --font-geist: var(--font-geist);
+  --font-geist-mono: var(--font-geist-mono);
+}
+
+:root {
+  --color-fd-primary: #8870ff;
+  --color-fd-info: #8870ff;
+}
+
+code {
+  font-family: var(--font-geist-mono);
+  font-weight: 600;
+}
