@@ -1,0 +1,133 @@
+---
+title: 1.3 The Zig Build System
+---
+
+For simple projects, compiling and executing can be combined using the `zig run` command:
+
+```shell
+$ zig run ./main.zig
+```
+
+This command compiles _main.zig_ and immediately runs the resulting executable. While convenient, this approach doesn't scale well for projects with multiple files, dependencies, or complex build requirements.
+
+## Creating a Project with Zig
+
+We created the "Hello, world!" project manually by first making a directory then creating a _main.zig_ file to store our code. Zig offers a better way to create projects through `zig init`. We first need to create a directory for the project, then run this command to have Zig set everything up for us. This is how we could have created the project in the previous section:
+
+```shell
+$ cd ~/projects
+$ mkdir hello_world
+$ cd hello_world
+$ zig init
+```
+
+The `zig init` command creates the following project structure:
+
+```text
+hello_world
+├─ src
+│  ├─ main.zig
+│ ├─ root.zig
+├─ build.zig
+├─ build.zig.zon
+```
+
+If you are writing an executable program such as our "Hello, world!" project, you will be writing code in _main.zig_. The convention is to delete the _root.zig_ file. If you are writing a library, however, _root.zig_ will be the root source file of the library. This means you can delete the _main.zig_ file.
+
+Both files are created with some boilerplate code. If you're curious, take a look at the code in the files. You can safely delete all of the code in either file and use the one necessary for your project (executable or library).
+
+You may have noticed two files we have not yet discussed: _build.zig_ and _build.zig.zon_. The following sections will explain their roles. The files contain helpful comments that explain the purpose of the code, so consider reading them if you're interested.
+
+For now, **do not** delete the code in _build.zig_ or _build.zig.zon;_ otherwise, your projects will fail to build. If you are more experienced, feel free to modify the files.
+
+- If you delete code in _build.zig_, the Zig compiler won't know what to compile or how to compile it.
+- If you delete code in _build.zig.zon_, you will encounter errors because required fields in the file are missing.
+
+<Callout title="Note: `zig run`">
+  With the project structure described above, we can no longer run our code with
+  `zig run ./main.zig` because the *main.zig* is not in the project root. We
+  have to use the correct path to the file: `zig run src/main.zig`.
+</Callout>
+
+## Package Management
+
+For managing real-world projects, Zig provides a powerful integrated build system invoked via the `zig build` command. This eliminates the need for external build tools like CMake.
+
+At the heart of the build system is the _build.zig_ file, which should be located in your project's root directory. This is a regular Zig source file containing instructions written in Zig code that define how your project should be built (e.g., compiling source files, linking libraries, creating executables, running tests).
+
+When you execute `zig build`, the Zig compiler looks for _build.zig_ in the current directory. It then compiles and runs this _build.zig_ script. The script, using the build system APIs provided by the standard library, orchestrates the compilation and linking of your entire project according to the logic you've defined.
+
+<Callout title="Note: Library Functions">
+  When writing library functions, it is necessary to add `export` before
+  function > declarations so that they are available in the public library
+  object created by > the Zig compiler.
+</Callout>
+
+## Project Configuration and Dependencies
+
+Alongside _build.zig_, you will often have a _build.zig.zon_ file. The `.zon` extension stands for Zig Object Notation, a data format similar to JSON but designed for Zig. It primarily serves to:
+
+- Declare metadata about your project (name, versions, etc.).
+- Delcare dependencies you project needs from external sources.
+
+The `build.zig.zon` file is similar to `package.json` in Node.js and `Cargo.toml` in Rust.
+
+Zig has a package manager that is integrated with the build system. This package manager reads the dependency information from _build.zig.zon_ and handles tasks like fetching and making them available to your _build.zig_ script. Your _build.zig_ script then uses functions like `b.dependency()` to incorporate these declared dependencies into the build process.
+
+Zig's package manager is under active development and not as mature as Cargo in Rust. This means that it can change often and documentation can be out-of-date.
+
+## Build Output
+
+By default, the `zig build` command places compiled artifacts (executables, libraries) into a _zig-out_ directory created in your project root. You can then run your executables directly, typically from:
+
+```shell
+$ ./zig-out/bin/your_project_name
+# The project name will be the name you defined in build.zig
+```
+
+## Build Modes
+
+Zig allows you to use different build-optimization modes called Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall. See the table for a quick reference or read below for more information. UB refers to undefined behavior.
+
+| Mode           | Goal                         | Optimizations                   | Safety        | Debug Info |
+| -------------- | ---------------------------- | ------------------------------- | ------------- | ---------- |
+| `Debug`        | Easiest debugging            | Disabled for faster compilation | Maximum       | Full       |
+| `ReleaseSafe`  | Optimized with safety checks | Enabled                         | UB will panic | Minimal    |
+| `ReleaseFast`  | Maximum runtime performance  | Enabled and tuned for speed     | Silent errors | None       |
+| `ReleaseSmall` | Smallest binary size         | Enabled and tuned for size      | Silent errors | None       |
+
+1. `Debug` (default):
+
+- **Goal:** Easiest debugging experience.
+- **Optimizations**: Optimizations are disabled to make compile times faster. It ensures the compiled code maps closely to the source code for debugging.
+- **Safety**: Enables the maximum amount of safety checks for undefind behavior, but results in worse runtime performance due to these checks.
+- **Debug Info**: Full debug information.
+
+2. `ReleaseSafe`:
+
+- **Goal:** Create an optimized release build with safety checks.
+- **Optimizations**: Optimizations are enabled.
+- **Safety**: Safety checks are enabled and undefined behavior will cause the program to panic (crash). This prevents silent errors but incurs a small runtime performance cost compared to `ReleaseFast`.
+- **Debug Info**: Minimal to none.
+
+3. `ReleaseFast`:
+
+- **Goal:** Maximum runtime performance.
+- **Optimizations**: Enabled and tuned for speed.
+- **Safety**: Safety checks are disabled. Undefined behavior might occur without warning. This has the best performance but requires careful coding.
+- **Debug Info**: Usually none.
+
+4. `ReleaseSmall`:
+
+- **Goal:** Minimum binary size.
+- **Optimizations**: Enabled and tuned for size.
+- **Safety**: Safety checks are disabled, similar to `ReleaseFast`. Undefined behavior might occur without warning.
+- **Debug Info**: Usually none. Useful for embedded systems or environments where binary size is critical.
+
+These build modes can be set with the flag: `-Doptimize=<mode>`:
+
+```shell
+$ zig build -Doptimize=ReleaseFast
+```
+
+It is best to be explicit about which mode you prefer when building your code. You can configure a default mode in `zig.build`. If you omit the optimization flag, Zig defaults to `Debug`.

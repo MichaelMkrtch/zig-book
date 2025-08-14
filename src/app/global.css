@@ -12,6 +12,10 @@
   --color-fd-info: #8870ff;
 }
 
+.dark {
+  --color-fd-muted: oklch(0.26 0.0157 279.43);
+}
+
 code {
   font-family: var(--font-geist-mono);
   font-weight: 600;
