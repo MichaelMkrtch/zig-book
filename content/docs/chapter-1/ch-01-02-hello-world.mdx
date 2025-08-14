@@ -17,6 +17,8 @@ $ mkdir hello_world
 $ cd hello_world
 ```
 
+---
+
 ## First Zig Program
 
 Make a new file and name it _main.zig_. Zig files always end with the _.zig_ extension. For multi-word filenames, the convention is to separate words with an underscore, like _hello_world.zig_.
@@ -43,6 +45,8 @@ $ ./main
 
 Congratulations! You've just written your first program in Zig.
 
+---
+
 ## Understanding a Zig Program
 
 Let's review this program line-by-line and in detail.
@@ -64,9 +68,9 @@ Zig can resolve paths in one of two ways:
 
 <Callout title="Note: Constants and Imports">
   Zig evaluates constant values at compile-time, not run-time. Additionally,
-  imports > are compile-time operations. Therefore, the result of an import,
-  which is needed > at compile-time, must be assigned to a constant so it's
-  evaluated at compile-time.
+  imports are compile-time operations. Therefore, the result of an import, which
+  is needed at compile-time, must be assigned to a constant so it's evaluated at
+  compile-time.
 </Callout>
 
 ### The `main` Function
@@ -90,7 +94,7 @@ The `!` prefix indicates an error union type, meaning the function can return ei
 
 Zig requires all function bodies to be wrapped in curly braces `{}`. It is good practice to open the braces on the same line as the function declaration, with one space in between.
 
-#### Function Body
+### Function Body
 
 The body of the `main` function holds the following code:
 
@@ -119,7 +123,7 @@ try stdout.print("Hello, world!\n", .{});
 
 <Callout title="Note: Try-Catch">
   You may be familiar with try-catch blocks in other programming languages. The
-  `try` > keyword in Zig behaves differently from what you may be used to.
+  `try` keyword in Zig behaves differently from what you may be used to.
 </Callout>
 
 1. `try`: This keyword is used to execute expressions that might return an error. Writing to standard output is an I/O operation that might fail for various reasons, including if the output stream is closed unexpectedly. `print()` is designed to return an error if such a failure occurs. There are two possible paths:
@@ -132,6 +136,8 @@ try stdout.print("Hello, world!\n", .{});
 This line attempts to print the specified string to the console via the stdout writer, automatically handling potential output errors thanks to try.
 
 We will learn more about strings, structs, and errors in later chapters.
+
+---
 
 ## Compiling and Running
 
@@ -169,6 +175,6 @@ While this approach is suitable for simple programs, it doesn't scale well as pr
 
 <Callout title="Note: Build Modes">
   In addition to `build-exe`, Zig offers the `build-lib` and `build-obj`
-  commands. > These commands compile your Zig modules into a portable C ABI
-  library or object > files, respectively.
+  commands. These commands compile your Zig modules into a portable C ABI
+  library or object files, respectively.
 </Callout>

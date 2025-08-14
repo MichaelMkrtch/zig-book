@@ -1,0 +1,142 @@
+---
+title: 2.1 Variables
+---
+
+In the same parent directory you used for the _hello_world_ project, create a directory and name it _variables_. Then, initialize the project:
+
+```shell
+$ cd ~/projects
+$ mkdir variables
+$ cd variables
+$ zig init
+```
+
+You can delete the _root.zig_ file completely, and delete the code found in _main.zig_ so you start with an empty file. Follow along this section in _main.zig_ and try to run the project on your machine to get used to compilation and compilation errors.
+
+---
+
+## Creating Variables
+
+In Zig, you can create constants and variables with their designated keywords. As you might expect, constants are immutable and variables are mutable. Enter the following code, which won't compile for now:
+
+Filename: src/main.zig
+
+```zig
+pub fn main() void {
+    const pi = 3.14;
+    var age = 25;
+}
+```
+
+Save the file and try running it with `zig run src/main.zig`. You will see some errors about unused local constants and variables. The compiler even points you to where the error is in your code.
+
+```text
+src/main.zig:3:9: error: unused local variable
+    var age = 25;
+        ^~~
+src/main.zig:2:11: error: unused local constant
+    const pi = 3.14;
+          ^~
+```
+
+If you see an error about a `comptime_int`, ignore it for now.
+
+---
+
+## Unused Variables
+
+Every variable we define must be used. Zig will enforce this rule and complain if we have unused variables, as we saw above. Since we may not need to use all variables in a program, Zig gives us a way to discard them. This means that you have two options when creating variables:
+
+1. Use its value.
+2. Discard its value.
+
+If we don't need to use a value we can assign it to `_`, which is a special character that tells the Zig compiler to discard values. Once a variable is discarded, it can no longer be used.
+
+We can fix the errors in our above program by discarding the values we don't use:
+
+```zig
+pub fn main() void {
+    const pi = 3.14;
+    var age = 25;
+
+    _ = pi;
+    _ = age;
+}
+```
+
+We've fixed the issue of unused variables with the `_` keyword, but now we see another error!
+
+```text
+src/main.zig:3:9: error: local variable is never mutated
+    var age = 25;
+        ^~~
+src/main.zig:3:9: note: consider using 'const'
+```
+
+In addition to enforcing unused variables, Zig will also enforce that variables are mutated. This means that your code will not compile if you create a variable but never mutate it. You must use a constant instead. Zig even suggests a solution to this under the error message: "note: consider using `const`."
+
+```zig
+pub fn main() void {
+    const pi = 3.14;
+    const age = 25;
+
+    _ = pi;
+    _ = age;
+}
+```
+
+This code will successfully compile. You've now debugged your first Zig program!
+
+---
+
+## Uninitialized Variables
+
+Zig requires that we declare and initialize variables at the same time. For example, the following code won't compile:
+
+```zig
+pub fn main() void {
+    var name;
+    name = "Ziggy";
+}
+```
+
+```text
+src/main.zig:2:13: error: expected '=', found ';'
+    var name;
+            ^
+```
+
+This error simply means that we need to give `name` a value when we create the variable. Zig is expecting to see an assignment to some value (`=`).
+
+If we need to declare a variable without a value, we must use the `undefined` keyword. It is best to avoid using `undefined` as much as possible. If your code uses a variable while it’s uninitialized, you will have undefined behavior and bugs in your program. Nevertheless, the code below compiles successfully.
+
+```zig
+pub fn main() void {
+    var age: u8 = undefined;
+    age = 25;
+}
+```
+
+<Callout title="Note: Data Types">
+  Since we are not initializing `age` to a value, we must explicitly state what
+  type the variable belongs to. In this case it is `u8`, meaning an unsigned
+  8-bit integer. > We will discuss more about data types in the next section.
+</Callout>
+
+---
+
+## Shadowing
+
+You can shadow variables in Zig as long as they are not in the same scope. Shadowing means to declare a variable with the same name as a previous variable. The second variable takes use of the variable name to itself until either it itself is shadowed or the scope ends.
+
+```zig
+pub fn main() void {
+    var scope = "outer scope";
+
+    {
+        var scope = "inner scope";
+    }
+}
+```
+
+In the code above, the curly braces inside the function body start a new scope. Within this scope, variables defined outside of it can be shadowed. Shadowing is useful in situations such as changing the data type of a variable. For example, we might ask a user for their age and get a response as a string (due to how user input works). Our program might require the age to be a number, so in a new scope we can redeclare the `age` variable and set its type to a number. Otherwise, we would need to save the user input to a variable such as `ageString` then convert it to a number and save it to a variable named `age`.

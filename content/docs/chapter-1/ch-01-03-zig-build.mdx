@@ -10,6 +10,8 @@ $ zig run ./main.zig
 
 This command compiles _main.zig_ and immediately runs the resulting executable. While convenient, this approach doesn't scale well for projects with multiple files, dependencies, or complex build requirements.
 
+---
+
 ## Creating a Project with Zig
 
 We created the "Hello, world!" project manually by first making a directory then creating a _main.zig_ file to store our code. Zig offers a better way to create projects through `zig init`. We first need to create a directory for the project, then run this command to have Zig set everything up for us. This is how we could have created the project in the previous section:
@@ -49,6 +51,8 @@ For now, **do not** delete the code in _build.zig_ or _build.zig.zon;_ otherwise
   have to use the correct path to the file: `zig run src/main.zig`.
 </Callout>
 
+---
+
 ## Package Management
 
 For managing real-world projects, Zig provides a powerful integrated build system invoked via the `zig build` command. This eliminates the need for external build tools like CMake.
@@ -59,9 +63,11 @@ When you execute `zig build`, the Zig compiler looks for _build.zig_ in the curr
 
 <Callout title="Note: Library Functions">
   When writing library functions, it is necessary to add `export` before
-  function > declarations so that they are available in the public library
-  object created by > the Zig compiler.
+  function declarations so that they are available in the public library object
+  created by the Zig compiler.
 </Callout>
+
+---
 
 ## Project Configuration and Dependencies
 
@@ -76,6 +82,8 @@ Zig has a package manager that is integrated with the build system. This package
 
 Zig's package manager is under active development and not as mature as Cargo in Rust. This means that it can change often and documentation can be out-of-date.
 
+---
+
 ## Build Output
 
 By default, the `zig build` command places compiled artifacts (executables, libraries) into a _zig-out_ directory created in your project root. You can then run your executables directly, typically from:
@@ -84,6 +92,8 @@ By default, the `zig build` command places compiled artifacts (executables, libr
 $ ./zig-out/bin/your_project_name
 # The project name will be the name you defined in build.zig
 ```
+
+---
 
 ## Build Modes
 
