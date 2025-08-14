@@ -1,5 +1,4 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import Image from 'next/image';
 
 /**
  * Shared layout configurations
@@ -12,11 +11,10 @@ export const baseOptions: BaseLayoutProps = {
   nav: {
     title: (
       <>
-        <Image
-          src="/zig-logo.png"
+        <img
+          src="/zig-mark.svg"
           alt="Zig logo. The letter 'Z' shaped like a bolt of lightning."
-          width={32}
-          height={32}
+          className="size-8"
         />
         The Zig Book
       </>
